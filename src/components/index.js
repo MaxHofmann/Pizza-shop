@@ -1,0 +1,14 @@
+export { default as Button } from './Button.jsx';
+export { default as Header } from './Header.jsx';
+export { default as Categories } from './Categories.jsx';
+export { default as SortPopup } from './SortPopup.jsx';
+export { default as PizzaBlock } from './PizzaBlock/index.jsx';
+export { default as LoadingBlock } from './LoadingBlock.jsx';
+export { default as DrinkBlock } from './DrinkBlock/index.jsx';
+export { default as DessertBlock } from './DessertBlock/index.jsx';
+export { default as SnackBlock } from './SnacksBlock/index.jsx';
+export { default as CartItem } from './CartItem.jsx';
+export { default as Parallax } from './ParallaxItem.jsx';
+export { default as BurgerMenu } from './BurgerMenu.jsx';
+export { default as Banner } from './Banner.jsx';
+export { default as Footer } from './Footer.jsx';

@@ -1,0 +1,105 @@
+@import '../variables.scss';
+
+.sort {
+  position: relative;
+  width: 100%;
+  @media (min-width: 480px) {
+    max-width: 280px;
+  }
+  &__label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    border-radius: 10px;
+    box-shadow: $style-shadow;
+    position: relative;
+    z-index: 2;
+    @media (min-width: 480px) {
+      flex-direction: row;
+      justify-content: start;
+    }
+    i {
+      width: 10px;
+      height: 12px;
+      background-color: $shop-style;
+      color: $shop-style;
+      border-radius: 5px;
+      animation: popup-close .3s;
+      margin-right: 8px;
+      transform: rotate(0deg);
+      @keyframes popup-close {
+        from {transform: rotate(180deg);}
+        to {transform: rotate(0deg);}
+      }
+      &.rotated {
+        animation: popup-open .3s ;
+        transform: rotate(180deg);
+      }
+      @keyframes popup-open {
+        from {transform: rotate(0deg);}
+        to {transform: rotate(180deg);}
+      }
+    }
+
+    b {
+      margin-right: 8px;
+    }
+
+    span {
+      position: relative;
+      z-index: 2;
+      color: $shop-style;
+      border-bottom: 1px dashed $shop-style;
+      cursor: pointer;
+    }
+  }
+
+  &__popup {
+    position: absolute;
+    z-index: 10;
+    right: 0;
+    margin-top: 15px;
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 10px 0;
+    width: 100%;
+    box-shadow: $style-shadow;
+    animation: popup-active .3s;
+
+    @media (min-width: 992px) {
+      width: 160px;
+    }
+    
+      @keyframes popup-active {
+        from {
+          transform: translateY(-40%);
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0%);
+        }
+      }
+
+
+    ul {
+      overflow: hidden;
+      li {
+        padding: 12px 20px;
+        cursor: pointer;
+        &.active,
+        &:hover {
+          background: rgba(254, 95, 30, 0.05);
+        }
+
+        &.active {
+          font-weight: bold;
+          color: $shop-style;
+        }
+      }
+    }
+  }
+}
