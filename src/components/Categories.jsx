@@ -1,9 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Categories = React.memo(function Categories({ activeCategory, items, onClickCategory }) {
+const Categories = React.memo(function Categories({
+  activeCategory,
+  items,
+  onClickCategory,
+  trigger,
+}) {
   return (
-    <div className="categories">
+    <div className={trigger ? 'categories-active categories' : 'categories'}>
       <ul>
         <li
           className={activeCategory === null ? 'active' : ''}
@@ -11,21 +16,22 @@ const Categories = React.memo(function Categories({ activeCategory, items, onCli
           Все
         </li>
         {items &&
-          items.map((name, index) => (
-            <li
-              className={activeCategory === index ? 'active' : ''}
-              onClick={() => onClickCategory(index)}
-              key={`${name}_${index}`}>
-              {name}
-            </li>
-          ))}
+          items.map((item, index) => {
+            return (
+              <li
+                onClick={() => onClickCategory(index)}
+                className={activeCategory === index ? 'active' : ''}
+                key={`${item}_${index}`}>
+                {item}
+              </li>
+            );
+          })}
       </ul>
     </div>
   );
 });
 
 Categories.propTypes = {
-  // activeCategory: PropTypes.oneOf([PropTypes.number, null]),
   items: PropTypes.arrayOf(PropTypes.string).isRequired,
   onClickCategory: PropTypes.func.isRequired,
 };

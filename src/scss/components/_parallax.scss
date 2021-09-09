@@ -1,0 +1,40 @@
+@import '../variables.scss';
+
+.parallax__content--item {
+  display: none;
+  position: fixed;
+  border-radius: 50%;
+  width: 250px;
+  height: 250px;
+  opacity: 0.8;
+  box-shadow: 13px 13px 8px 0px rgba(0, 0, 0, 0.67);
+
+  @media (min-width: 768px) {
+    display: block;
+  }
+
+  &:nth-child(1n) {
+    top: 0px;
+    left: 80px;
+  }
+  &:nth-child(2n) {
+    top: 310px;
+    left: -130px;
+  }
+  &:nth-child(3n) {
+    top: 580px;
+    left: -120px;
+  }
+  &:nth-child(4n) {
+    top: -50px;
+    left: 1700px;
+  }
+  &:nth-child(5n) {
+    top: 250px;
+    left: 1530px;
+  }
+  &:nth-child(6n) {
+    top: 600px;
+    left: 1650px;
+  }
+}

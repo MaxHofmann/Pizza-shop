@@ -1,21 +1,59 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Button from '../Button';
 
-function PizzaBlock({ id, name, imageUrl, price, types, sizes, onClickAddPizza, addedCount }) {
+function PizzaBlock({
+  id,
+  name,
+  description,
+  imageUrl,
+  price,
+  types,
+  sizes,
+  onClickAddPizza,
+  addedCount,
+}) {
   const availableTypes = ['тонкое', 'традиционное'];
   const availableSizes = [26, 30, 40];
 
-  const [activeType, setActiveType] = React.useState(types[0]);
-  const [activeSize, setActiveSize] = React.useState(0);
+  const [activeType, SetActiveType] = useState(types[0]);
+  const [activeSize, SetActiveSize] = useState(sizes[0]);
+  const [activePrice, SetActivePrice] = useState(price);
+  const [activeDescription, SetDescription] = useState(false);
 
-  const onSelectType = (index) => {
-    setActiveType(index);
+  const onDescription = () => {
+    SetDescription(!activeDescription);
   };
 
-  const onSelectSize = (index) => {
-    setActiveSize(index);
+  const setPercent = (price, percent) => {
+    return Math.round(price + (price * percent) / 100);
+  };
+
+  const onUniteSelectActive = (index, size) => {
+    let typesize = [index, size].join('');
+
+    if (index > -1 && activeType !== index) {
+      SetActiveType(index);
+    } else if (size && activeSize !== size) {
+      SetActiveSize(size);
+    }
+
+    switch (typesize) {
+      case '030':
+        return SetActivePrice(setPercent(price, 25));
+      case '040':
+        return SetActivePrice(setPercent(price, 50));
+      case '026':
+        return SetActivePrice(price);
+      case '130':
+        return SetActivePrice(setPercent(price, 50));
+      case '140':
+        return SetActivePrice(setPercent(price, 75));
+      case '126':
+        return SetActivePrice(setPercent(price, 25));
+      default:
+    }
   };
 
   const onAddPizza = () => {
@@ -23,8 +61,8 @@ function PizzaBlock({ id, name, imageUrl, price, types, sizes, onClickAddPizza, 
       id,
       name,
       imageUrl,
-      price,
-      size: availableSizes[activeSize],
+      price: activePrice,
+      size: activeSize + ' см.',
       type: availableTypes[activeType],
     };
     onClickAddPizza(obj);
@@ -32,14 +70,23 @@ function PizzaBlock({ id, name, imageUrl, price, types, sizes, onClickAddPizza, 
 
   return (
     <div className="pizza-block">
+      <i onClick={onDescription} className="fas fa-align-right pizza-block__icon"></i>
       <img className="pizza-block__image" src={imageUrl} alt="Pizza" />
+      <p
+        className={
+          activeDescription ? 'pizza-block__description' : 'pizza-block__description--false'
+        }>
+        <i className="fas fa-pizza-slice"></i>
+        {description}
+      </p>
       <h4 className="pizza-block__title">{name}</h4>
       <div className="pizza-block__selector">
         <ul>
           {availableTypes.map((type, index) => (
             <li
+              disabled="disabled"
               key={type}
-              onClick={() => onSelectType(index)}
+              onClick={() => onUniteSelectActive(index, activeSize)}
               className={classNames({
                 active: activeType === index,
                 disabled: !types.includes(index),
@@ -49,12 +96,12 @@ function PizzaBlock({ id, name, imageUrl, price, types, sizes, onClickAddPizza, 
           ))}
         </ul>
         <ul>
-          {availableSizes.map((size, index) => (
+          {availableSizes.map((size) => (
             <li
               key={size}
-              onClick={() => onSelectSize(index)}
+              onClick={() => onUniteSelectActive(activeType, size)}
               className={classNames({
-                active: activeSize === index,
+                active: activeSize === size,
                 disabled: !sizes.includes(size),
               })}>
               {size} см.
@@ -63,20 +110,12 @@ function PizzaBlock({ id, name, imageUrl, price, types, sizes, onClickAddPizza, 
         </ul>
       </div>
       <div className="pizza-block__bottom">
-        <div className="pizza-block__price">от {price} ₽</div>
+        <div className="pizza-block__price">
+          от {activePrice} <i className="fas fa-hryvnia"></i>
+        </div>
         <Button onClick={onAddPizza} className="button--add" outline>
-          <svg
-            width="12"
-            height="12"
-            viewBox="0 0 12 12"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M10.8 4.8H7.2V1.2C7.2 0.5373 6.6627 0 6 0C5.3373 0 4.8 0.5373 4.8 1.2V4.8H1.2C0.5373 4.8 0 5.3373 0 6C0 6.6627 0.5373 7.2 1.2 7.2H4.8V10.8C4.8 11.4627 5.3373 12 6 12C6.6627 12 7.2 11.4627 7.2 10.8V7.2H10.8C11.4627 7.2 12 6.6627 12 6C12 5.3373 11.4627 4.8 10.8 4.8Z"
-              fill="white"
-            />
-          </svg>
           <span>Добавить</span>
+          {!addedCount && <i className="far fa-plus-square"></i>}
           {addedCount && <i>{addedCount}</i>}
         </Button>
       </div>
@@ -85,17 +124,19 @@ function PizzaBlock({ id, name, imageUrl, price, types, sizes, onClickAddPizza, 
 }
 
 PizzaBlock.propTypes = {
-  name: PropTypes.string,
-  imageUrl: PropTypes.string,
-  price: PropTypes.number,
-  types: PropTypes.arrayOf(PropTypes.number),
-  sizes: PropTypes.arrayOf(PropTypes.number),
+  name: PropTypes.string.isRequired,
+  imageUrl: PropTypes.string.isRequired,
+  price: PropTypes.number.isRequired,
+  types: PropTypes.arrayOf(PropTypes.number).isRequired,
+  sizes: PropTypes.arrayOf(PropTypes.number).isRequired,
   onClickAddPizza: PropTypes.func,
   addedCount: PropTypes.number,
 };
 
 PizzaBlock.defaultProps = {
-  name: '---',
+  imageUrl:
+    'https://upload.wikimedia.org/wikipedia/ru/thumb/a/ac/No_image_available.svg/1200px-No_image_available.svg.png',
+  name: 'name',
   price: 0,
   types: [],
   sizes: [],
