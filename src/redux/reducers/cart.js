@@ -4,7 +4,21 @@ const initialState = {
   totalCount: 0,
 };
 
-const getTotalPrice = (arr) => arr.reduce((acum, obj) => obj.price + acum, 0);
+const getTotalPrice = (arr) => arr.reduce((sum, obj) => obj.price + sum, 0);
+
+const _get = (obj, path) => {
+  const [firstKey, ...keys] = path.split('.');
+  return keys.reduce((val, key) => {
+    return val[key];
+  }, obj[firstKey]);
+};
+
+const getTotalSum = (obj, path) => {
+  return Object.values(obj).reduce((sum, obj) => {
+    const value = _get(obj, path);
+    return sum + value;
+  }, 0);
+};
 
 const cart = (state = initialState, action) => {
   switch (action.type) {
@@ -21,24 +35,18 @@ const cart = (state = initialState, action) => {
         },
       };
 
-      const totalCount = Object.keys(newItems).reduce(
-        (sum, key) => newItems[key].items.length + sum,
-        0,
-      );
-      const totalPrice = Object.keys(newItems).reduce(
-        (sum, key) => newItems[key].totalPrice + sum,
-        0,
-      );
+      const totalCount = getTotalSum(newItems, 'items.length');
+      const totalPrice = getTotalSum(newItems, 'totalPrice');
 
       return {
         ...state,
         items: newItems,
-        totalCount: totalCount,
-        totalPrice: totalPrice,
+        totalCount,
+        totalPrice,
       };
     }
 
-    case 'REMOVE_CART_ITEM':
+    case 'REMOVE_CART_ITEM': {
       const newItems = {
         ...state.items,
       };
@@ -51,6 +59,7 @@ const cart = (state = initialState, action) => {
         totalPrice: state.totalPrice - currentTotalPrice,
         totalCount: state.totalCount - currentTotalCount,
       };
+    }
 
     case 'PLUS_CART_ITEM': {
       const newObjItems = [
@@ -65,14 +74,8 @@ const cart = (state = initialState, action) => {
         },
       };
 
-      const totalCount = Object.keys(newItems).reduce(
-        (sum, key) => newItems[key].items.length + sum,
-        0,
-      );
-      const totalPrice = Object.keys(newItems).reduce(
-        (sum, key) => newItems[key].totalPrice + sum,
-        0,
-      );
+      const totalCount = getTotalSum(newItems, 'items.length');
+      const totalPrice = getTotalSum(newItems, 'totalPrice');
 
       return {
         ...state,
@@ -94,14 +97,8 @@ const cart = (state = initialState, action) => {
         },
       };
 
-      const totalCount = Object.keys(newItems).reduce(
-        (sum, key) => newItems[key].items.length + sum,
-        0,
-      );
-      const totalPrice = Object.keys(newItems).reduce(
-        (sum, key) => newItems[key].totalPrice + sum,
-        0,
-      );
+      const totalCount = getTotalSum(newItems, 'items.length');
+      const totalPrice = getTotalSum(newItems, 'totalPrice');
 
       return {
         ...state,
@@ -112,11 +109,7 @@ const cart = (state = initialState, action) => {
     }
 
     case 'CLEAR_CART':
-      return {
-        totalCount: 0,
-        totalPrice: 0,
-        items: {},
-      };
+      return { totalPrice: 0, totalCount: 0, items: {} };
 
     default:
       return state;
