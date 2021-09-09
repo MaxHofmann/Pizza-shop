@@ -46,7 +46,7 @@
     right: 0;
     bottom: 0;
     left: 0;
-    background-color: rgba(252, 3, 19, .2);
+    background-color: rgba(252, 3, 19, 0.2);
   }
 
   h1 {
@@ -121,12 +121,6 @@
     justify-content: center;
     box-shadow: 0px 11px 11px -10px rgba(34, 60, 80, 1);
     
-
-    // @media (min-width: 768px) {
-    //   justify-content: flex-start;
-    //   width: 100%;
-    // }
-
     @media (min-width: 1500px) {
       justify-content: flex-start;
       width: 100%;
@@ -175,14 +169,24 @@
   transition: 0.3s;
   &__top {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     align-items: center;
+
+    @media (min-width: 480px) {
+      flex-direction: row;
+    }
   }
 
   .content__title {
     display: flex;
     align-items: center;
     font-size: 32px;
+    margin-bottom: 10px;
+
+    @media (min-width: 480px) {
+      margin-bottom: 0;
+    }
 
     svg {
       position: relative;
@@ -227,23 +231,27 @@
     }
 
     .visible--left {
-      left: 0%;
-      transform: translate(-20%, 99%);
+      top: 50%;
+      right: 50%;
+      transform: translate(50%, 50%);
       text-align: start;
       animation: visible-active-left 0.2s;
 
       @keyframes visible-active-left {
         from {
           opacity: 0;
-          transform: translate(0%, 0%);
+          transform: translate(50%, 0%);
         }
         to {
           opacity: 1;
-          transform: translate(-20%, 99%);
+          transform: translate(50%, 50%);
         }
       }
 
       @media (min-width: 1028px) {
+        top: 0;
+        right: 0;
+        left: 0%;
         transform: translate(-60%, 0%);
 
         @keyframes visible-active-left {
@@ -260,25 +268,30 @@
     }
 
     .visible--right {
-      right: 0%;
-      transform: translate(-65%, 197%);
+      top: 50%;
+      right: 50%;
+      transform: translate(50%, 150%);
       text-align: center;
       animation: visible-active-right 0.2s;
       padding: 5px;
+      width: 120px;
 
       @keyframes visible-active-right {
         from {
           opacity: 0;
-          transform: translate(0%, 0%);
+          transform: translate(50%, 0%);
         }
         to {
           opacity: 1;
-          transform: translate(-65%, 197%);
+          transform: translate(50%, 150%);
         }
       }
 
       @media (min-width: 1028px) {
+        top: 0;
+        right: 0%;
         transform: translate(60%, 0%);
+        width: 160px;
         text-align: end;
         @keyframes visible-active-right {
           from {
@@ -315,9 +328,13 @@
 
     span {
       display: inline-block;
-      margin-left: 7px;
+      margin: 0 2px;
       color: #b6b6b6;
       font-size: 18px;
+
+      @media (min-width: 1028px) {
+        margin: 0 7px 0 0;
+      }
     }
 
     span,
@@ -396,7 +413,7 @@
       width: 70%;
 
       @media (min-width: 768px) {
-        width: 13%;
+        width: 16%;
       }
 
       &-minus {

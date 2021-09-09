@@ -80,99 +80,119 @@ function Home() {
   return (
     <main>
       <div className="container">
-      <div className="content__top">
-        <BurgerMenu onClick={onClickBurger} active={activeBurger} />
-        <Categories
-          trigger={activeBurger}
-          activeCategory={categoryProduct}
-          onClickCategory={onSelectCategoryProduct}
-          items={categoryProducts}
-        />
-        <SortPopup
-          activeSortType={sortBy.type}
-          items={sortItems}
-          onClickSortType={onSelectSortType}
-        />
-        {categoryProduct === 0 && (
-          <BurgerMenu onClick={onClickBurgerPizza} active={activeBurgerPizza} />
-        )}
-      </div>
-      <div className="content__items">
-        {categoryProduct < 1 && (
-          <h2 className="content__title">
-            {categoryPizzas === null && categoryProduct === 0
-              ? 'Все пиццы'
-              : categoryNames[categoryPizzas]}
-          </h2>
-        )}
-        {categoryProduct === 1 && <h2 className="content__title">Напитки</h2>}
-        {categoryProduct === 2 && <h2 className="content__title">Десерты</h2>}
-        {categoryProduct === 3 && <h2 className="content__title">Закуски</h2>}
-        {categoryProduct === null && <h2 className="content__title">Все</h2>}
-
-        {categoryProduct === 0 && (
+        <div className="content__top">
+          <BurgerMenu onClick={onClickBurger} active={activeBurger} />
           <Categories
-            trigger={activeBurgerPizza}
-            activeCategory={categoryPizzas}
-            onClickCategory={onSelectCategory}
-            items={categoryNames}
+            trigger={activeBurger}
+            activeCategory={categoryProduct}
+            onClickCategory={onSelectCategoryProduct}
+            items={categoryProducts}
           />
-        )}
-        <div className={(categoryProduct === 0 || categoryProduct === null) && "content__items--product product__active"}>
-          {!isLoaded
-            ? Array(12)
-                .fill(0)
-                .map((_, index) => <LoadingBlock key={index} />)
-            : null}
-          {(isLoaded && categoryProduct === 0) || categoryProduct === null
-            ? items.map((obj) => (
-                <PizzaBlock
-                  onClickAddPizza={handleAddPizzaToCart}
-                  key={obj.id}
-                  addedCount={cartItems[obj.id] && cartItems[obj.id].items.length}
-                  {...obj}
-                />
-              ))
-            : null}
+          <SortPopup
+            activeSortType={sortBy.type}
+            items={sortItems}
+            onClickSortType={onSelectSortType}
+          />
+          {categoryProduct === 0 && (
+            <BurgerMenu onClick={onClickBurgerPizza} active={activeBurgerPizza} />
+          )}
         </div>
-        <div className={(categoryProduct === 1 || categoryProduct === null) && "content__items--product product__active"}>
-          {(isLoaded && categoryProduct === 1) || categoryProduct === null
-            ? itemsDrink.map((obj) => (
-                <DrinkBlock
-                  key={obj.id}
-                  onClickAddPizza={handleAddPizzaToCart}
-                  addedCount={cartItems[obj.id] && cartItems[obj.id].items.length}
-                  {...obj}
-                />
-              ))
-            : null}
-        </div>
-        <div className={(categoryProduct === 2 || categoryProduct === null) && "content__items--product product__active"}>
-          {(isLoaded && categoryProduct === 2) || categoryProduct === null
-            ? itemsDesserts.map((obj) => (
-                <DessertBlock
-                  key={obj.id}
-                  onClickAddPizza={handleAddPizzaToCart}
-                  addedCount={cartItems[obj.id] && cartItems[obj.id].items.length}
-                  {...obj}
-                />
-              ))
-            : null}
-        </div>
-        <div className={(categoryProduct === 3 || categoryProduct === null) && "content__items--product product__active"}>
-          {(isLoaded && categoryProduct === 3) || categoryProduct === null
-            ? itemsSnacks.map((obj) => (
-                <SnackBlock
-                  key={obj.id}
-                  onClickAddPizza={handleAddPizzaToCart}
-                  addedCount={cartItems[obj.id] && cartItems[obj.id].items.length}
-                  {...obj}
-                />
-              ))
-            : null}
+        <div className="content__items">
+          {categoryProduct < 1 && (
+            <h2 className="content__title">
+              {categoryPizzas === null && categoryProduct === 0
+                ? 'Все пиццы'
+                : categoryNames[categoryPizzas]}
+            </h2>
+          )}
+          {categoryProduct === 1 && <h2 className="content__title">Напитки</h2>}
+          {categoryProduct === 2 && <h2 className="content__title">Десерты</h2>}
+          {categoryProduct === 3 && <h2 className="content__title">Закуски</h2>}
+          {categoryProduct === null && <h2 className="content__title">Все</h2>}
+
+          {categoryProduct === 0 && (
+            <Categories
+              trigger={activeBurgerPizza}
+              activeCategory={categoryPizzas}
+              onClickCategory={onSelectCategory}
+              items={categoryNames}
+            />
+          )}
+          <div
+            className={
+              categoryProduct === 0 || categoryProduct === null
+                ? 'content__items--product product__active'
+                : 'content__items--product'
+            }>
+            {!isLoaded
+              ? Array(12)
+                  .fill(0)
+                  .map((_, index) => <LoadingBlock key={index} />)
+              : null}
+            {(isLoaded && categoryProduct === 0) || categoryProduct === null
+              ? items.map((obj) => (
+                  <PizzaBlock
+                    onClickAddPizza={handleAddPizzaToCart}
+                    key={obj.id}
+                    addedCount={cartItems[obj.id] && cartItems[obj.id].items.length}
+                    {...obj}
+                  />
+                ))
+              : null}
+          </div>
+          <div
+            className={
+              categoryProduct === 1 || categoryProduct === null
+                ? 'content__items--product product__active'
+                : 'content__items--product'
+            }>
+            {(isLoaded && categoryProduct === 1) || categoryProduct === null
+              ? itemsDrink.map((obj) => (
+                  <DrinkBlock
+                    key={obj.id}
+                    onClickAddPizza={handleAddPizzaToCart}
+                    addedCount={cartItems[obj.id] && cartItems[obj.id].items.length}
+                    {...obj}
+                  />
+                ))
+              : null}
+          </div>
+          <div
+            className={
+              categoryProduct === 2 || categoryProduct === null
+                ? 'content__items--product product__active'
+                : 'content__items--product'
+            }>
+            {(isLoaded && categoryProduct === 2) || categoryProduct === null
+              ? itemsDesserts.map((obj) => (
+                  <DessertBlock
+                    key={obj.id}
+                    onClickAddPizza={handleAddPizzaToCart}
+                    addedCount={cartItems[obj.id] && cartItems[obj.id].items.length}
+                    {...obj}
+                  />
+                ))
+              : null}
+          </div>
+          <div
+            className={
+              categoryProduct === 3 || categoryProduct === null
+                ? 'content__items--product product__active'
+                : 'content__items--product'
+            }>
+            {(isLoaded && categoryProduct === 3) || categoryProduct === null
+              ? itemsSnacks.map((obj) => (
+                  <SnackBlock
+                    key={obj.id}
+                    onClickAddPizza={handleAddPizzaToCart}
+                    addedCount={cartItems[obj.id] && cartItems[obj.id].items.length}
+                    {...obj}
+                  />
+                ))
+              : null}
+          </div>
         </div>
       </div>
-    </div>
     </main>
   );
 }
