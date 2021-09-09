@@ -1,26 +1,31 @@
-@import 'variables';
+@import '../variables.scss';
 
 .header {
   border-bottom: 1px solid $gray-line;
-  padding: 40px 0;
+  padding: 20px 10px;
+  box-shadow: $style-shadow;
 
+  @media (min-width: 480px) {
+    padding: 20px 0;
+  }
+  
   .container {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    @media (max-width: 768px) {
-      flex-direction: column;
-    }
-  }
-
-  @media (max-width: 768px) {
-    &__cart {
-      margin-top: 30px;
-    }
   }
 
   &__logo {
     display: flex;
+    align-items: center;
+    padding: 2px;
+    border-radius: 10px;
+    box-shadow: $style-shadow;
+    max-width: 120px;
+
+    @media (min-width: 480px) {
+      max-width: 100%;
+    }
 
     img {
       margin-right: 15px;
@@ -28,14 +33,27 @@
 
     h1 {
       color: #181818;
-      font-size: 24px;
+      font-size: 18px;
       letter-spacing: 1%;
       text-transform: uppercase;
       font-weight: 800;
+
+      @media (min-width: 480px) {
+        font-size: 24px;
+      }
     }
 
     p {
       color: #7b7b7b;
     }
+  }
+
+  .fa-cart-plus {
+    font-size: 20px;
+    margin-right: 10px;
+  }
+
+  .number-item {
+    font-size: 22px;
   }
 }

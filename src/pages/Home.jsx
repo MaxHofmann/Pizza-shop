@@ -1,37 +1,66 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { Categories, SortPopup, PizzaBlock, PizzaLoadingBlock } from '../components';
+import {
+  Categories,
+  PizzaBlock,
+  SortPopup,
+  LoadingBlock,
+  DrinkBlock,
+  DessertBlock,
+  SnackBlock,
+  BurgerMenu,
+} from '../components';
 
-import { setCategory, setSortBy } from '../redux/actions/filters';
-import { fetchPizzas } from '../redux/actions/pizzas';
-import { addPizzaToCart } from '../redux/actions/cart';
+import { setCategory, setSortBy, setCategoryProduct } from '../redux/actions/filters';
+import { fetchPizzas } from '../redux/actions/product';
 
-const categoryNames = ['Мясные', 'Вегетарианская', 'Гриль', 'Острые', 'Закрытые'];
-const sortIems = [
-  { name: 'популярности', type: 'popular', order: 'desc' },
-  { name: 'цене', type: 'price', order: 'desc' },
-  { name: 'алфавит', type: 'name', order: 'asc' },
+const categoryProducts = ['Пиццы', 'Напитки', 'Десерты', 'Закуски'];
+const categoryNames = ['Мясные', 'Вегетарианская', 'Гриль', 'Острые'];
+const sortItems = [
+  { name: 'Популярности', type: 'popular', order: 'desc' },
+  { name: 'Цене', type: 'price', order: 'desc' },
+  { name: 'Алфавиту', type: 'name', order: 'asc' },
 ];
 
 function Home() {
   const dispatch = useDispatch();
-  const items = useSelector(({ pizzas }) => pizzas.items);
+  const items = useSelector(({ product }) => product.items);
+  const itemsDrink = useSelector(({ product }) => product.itemsDrink);
+  const itemsDesserts = useSelector(({ product }) => product.itemsDesserts);
+  const itemsSnacks = useSelector(({ product }) => product.itemsSnacks);
   const cartItems = useSelector(({ cart }) => cart.items);
-  const isLoaded = useSelector(({ pizzas }) => pizzas.isLoaded);
-  const { category, sortBy } = useSelector(({ filters }) => filters);
+  const [activeBurger, setActiveBurger] = useState(false);
+  const [activeBurgerPizza, setActiveBurgerPizza] = useState(false);
+  const isLoaded = useSelector(({ product }) => product.isLoaded);
+  const { categoryPizzas, sortBy, categoryProduct } = useSelector(({ filters }) => filters);
 
-  React.useEffect(() => {
-    dispatch(fetchPizzas(sortBy, category));
-  }, [category, sortBy]);
+  useEffect(() => {
+    dispatch(fetchPizzas(sortBy, categoryPizzas));
+  }, [dispatch, sortBy, categoryPizzas]);
 
-  const onSelectCategory = React.useCallback((index) => {
-    dispatch(setCategory(index));
-  }, []);
+  const onSelectCategory = useCallback(
+    (index) => {
+      setActiveBurgerPizza(false);
+      dispatch(setCategory(index));
+    },
+    [dispatch],
+  );
 
-  const onSelectSortType = React.useCallback((type) => {
-    dispatch(setSortBy(type));
-  }, []);
+  const onSelectCategoryProduct = useCallback(
+    (index) => {
+      setActiveBurger(false);
+      dispatch(setCategoryProduct(index));
+    },
+    [dispatch],
+  );
+
+  const onSelectSortType = useCallback(
+    (type) => {
+      dispatch(setSortBy(type));
+    },
+    [dispatch],
+  );
 
   const handleAddPizzaToCart = (obj) => {
     dispatch({
@@ -40,36 +69,131 @@ function Home() {
     });
   };
 
+  const onClickBurger = () => {
+    setActiveBurger(!activeBurger);
+  };
+
+  const onClickBurgerPizza = () => {
+    setActiveBurgerPizza(!activeBurgerPizza);
+  };
+
   return (
-    <div className="container">
-      <div className="content__top">
-        <Categories
-          activeCategory={category}
-          onClickCategory={onSelectCategory}
-          items={categoryNames}
-        />
-        <SortPopup
-          activeSortType={sortBy.type}
-          items={sortIems}
-          onClickSortType={onSelectSortType}
-        />
+    <main>
+      <div className="container">
+        <div className="content__top">
+          <BurgerMenu onClick={onClickBurger} active={activeBurger} />
+          <Categories
+            trigger={activeBurger}
+            activeCategory={categoryProduct}
+            onClickCategory={onSelectCategoryProduct}
+            items={categoryProducts}
+          />
+          <SortPopup
+            activeSortType={sortBy.type}
+            items={sortItems}
+            onClickSortType={onSelectSortType}
+          />
+          {categoryProduct === 0 && (
+            <BurgerMenu onClick={onClickBurgerPizza} active={activeBurgerPizza} />
+          )}
+        </div>
+        <div className="content__items">
+          {categoryProduct < 1 && (
+            <h2 className="content__title">
+              {categoryPizzas === null && categoryProduct === 0
+                ? 'Все пиццы'
+                : categoryNames[categoryPizzas]}
+            </h2>
+          )}
+          {categoryProduct === 1 && <h2 className="content__title">Напитки</h2>}
+          {categoryProduct === 2 && <h2 className="content__title">Десерты</h2>}
+          {categoryProduct === 3 && <h2 className="content__title">Закуски</h2>}
+          {categoryProduct === null && <h2 className="content__title">Все</h2>}
+
+          {categoryProduct === 0 && (
+            <Categories
+              trigger={activeBurgerPizza}
+              activeCategory={categoryPizzas}
+              onClickCategory={onSelectCategory}
+              items={categoryNames}
+            />
+          )}
+          <div
+            className={
+              categoryProduct === 0 || categoryProduct === null
+                ? 'content__items--product product__active'
+                : 'content__items--product'
+            }>
+            {!isLoaded
+              ? Array(12)
+                  .fill(0)
+                  .map((_, index) => <LoadingBlock key={index} />)
+              : null}
+            {(isLoaded && categoryProduct === 0) || categoryProduct === null
+              ? items.map((obj) => (
+                  <PizzaBlock
+                    onClickAddPizza={handleAddPizzaToCart}
+                    key={obj.id}
+                    addedCount={cartItems[obj.id] && cartItems[obj.id].items.length}
+                    {...obj}
+                  />
+                ))
+              : null}
+          </div>
+          <div
+            className={
+              categoryProduct === 1 || categoryProduct === null
+                ? 'content__items--product product__active'
+                : 'content__items--product'
+            }>
+            {(isLoaded && categoryProduct === 1) || categoryProduct === null
+              ? itemsDrink.map((obj) => (
+                  <DrinkBlock
+                    key={obj.id}
+                    onClickAddPizza={handleAddPizzaToCart}
+                    addedCount={cartItems[obj.id] && cartItems[obj.id].items.length}
+                    {...obj}
+                  />
+                ))
+              : null}
+          </div>
+          <div
+            className={
+              categoryProduct === 2 || categoryProduct === null
+                ? 'content__items--product product__active'
+                : 'content__items--product'
+            }>
+            {(isLoaded && categoryProduct === 2) || categoryProduct === null
+              ? itemsDesserts.map((obj) => (
+                  <DessertBlock
+                    key={obj.id}
+                    onClickAddPizza={handleAddPizzaToCart}
+                    addedCount={cartItems[obj.id] && cartItems[obj.id].items.length}
+                    {...obj}
+                  />
+                ))
+              : null}
+          </div>
+          <div
+            className={
+              categoryProduct === 3 || categoryProduct === null
+                ? 'content__items--product product__active'
+                : 'content__items--product'
+            }>
+            {(isLoaded && categoryProduct === 3) || categoryProduct === null
+              ? itemsSnacks.map((obj) => (
+                  <SnackBlock
+                    key={obj.id}
+                    onClickAddPizza={handleAddPizzaToCart}
+                    addedCount={cartItems[obj.id] && cartItems[obj.id].items.length}
+                    {...obj}
+                  />
+                ))
+              : null}
+          </div>
+        </div>
       </div>
-      <h2 className="content__title">Все пиццы</h2>
-      <div className="content__items">
-        {isLoaded
-          ? items.map((obj) => (
-              <PizzaBlock
-                onClickAddPizza={handleAddPizzaToCart}
-                key={obj.id}
-                addedCount={cartItems[obj.id] && cartItems[obj.id].items.length}
-                {...obj}
-              />
-            ))
-          : Array(12)
-              .fill(0)
-              .map((_, index) => <PizzaLoadingBlock key={index} />)}
-      </div>
-    </div>
+    </main>
   );
 }
 

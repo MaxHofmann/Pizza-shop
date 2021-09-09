@@ -1,0 +1,44 @@
+@import '../variables.scss';
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  bottom: 0;
+  padding: 15px;
+  background-color: $shop-style-opacity;
+  flex: 1 1 auto;
+
+  p {
+    margin-right: 20px;
+  }
+
+  i {
+    font-size: 25px;
+    margin-right: 20px;
+    transition: color .3s;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  .fa-twitter-square {
+    &:hover {
+      color: #00acee;
+    }
+  }
+
+  .fa-google-plus-square {
+    &:hover {
+      color: #34a853;
+    }
+  }
+
+  .fa-facebook-square {
+    &:hover {
+      color: #3b5998;
+    }
+  }
+}
