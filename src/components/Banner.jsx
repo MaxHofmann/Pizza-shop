@@ -6,7 +6,7 @@ function Banner() {
     <div className="banner">
       <div className="banner__block" style={{ backgroundImage: `url(${background})` }}>
         <div className="banner__block--wrap">
-          <h1>Pizza shop</h1>
+          <h1 >Pizza shop</h1>
           <img src={logoSvg} alt="logoSvg" />
         </div>
       </div>
