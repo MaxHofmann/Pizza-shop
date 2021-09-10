@@ -14,7 +14,7 @@ function Header() {
           <div className="header__logo">
             <img width="38" src={logoSvg} alt="Pizza logo" />
             <div>
-              <h1>Pizza shop</h1>
+              <h1 className="notranslate">Pizza shop</h1>
             </div>
           </div>
         </Link>
