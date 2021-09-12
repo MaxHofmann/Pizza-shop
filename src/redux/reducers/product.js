@@ -1,3 +1,4 @@
+
 const initialState = {
   items: [],
   itemsDrink: [],
@@ -37,7 +38,7 @@ const product = (state = initialState, action) => {
         ...state,
         isLoaded: action.payload,
       };
-
+    
     default:
       return state;
   }
